@@ -1,0 +1,12 @@
+.nrepl-port
+.cpcache
+config.edn
+/.shadow-cljs/
+/config/
+/data/
+/node_modules/
+/storage/
+/target/
+/www/
+config.edn
+screenshot-src-2
