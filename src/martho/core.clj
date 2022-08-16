@@ -83,7 +83,10 @@
   (loop [board start-board]
     (cond
       (= 1 (:turn board))
-      (turn board (filter #(zero? (val %)) (:state board)))
+      (turn board (key (rand-nth (filter #(zero? (val %)) (:state board)))))
       (= -1 (:turn board)) (let [line (read-line)]
                              (recur (turn board [(- (int (first line)) 97)
                                                  (Character/digit (last line) 10)]))))))
+
+(comment
+  )
