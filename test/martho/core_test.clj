@@ -17,9 +17,27 @@
                     [0 1] 0}}
            (core/turn board [0 0])))))
 
-(deftest t-win
+(deftest t-win-1
+  (let [board (loop [board core/start-board
+                     [move & moves] [[1 2] [0 0] [0 1] [1 1] [0 2] [2 2]]]
+                (if move
+                  (recur (core/turn board move) moves)
+                  board))]
+    (is (zero? (:turn board)))))
+
+(deftest t-win-2
   (let [board (loop [board core/start-board
                      [move & moves] [[0 0] [0 1] [1 1] [0 2] [2 2]]]
+                (if move
+                  (recur (core/turn board move) moves)
+                  board))]
+    (is (zero? (:turn board)))))
+
+(deftest t-win-3
+  (let [board (loop [board core/start-board
+                     [move & moves] [[0 0] [1 0] [2 0]
+                                     [0 1] [1 1] [0 2] [2 1]
+                                     [2 2] [1 2]]]
                 (if move
                   (recur (core/turn board move) moves)
                   board))]

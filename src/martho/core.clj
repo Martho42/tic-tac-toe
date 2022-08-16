@@ -51,23 +51,38 @@
         cross2 [(filter #(= 2 (+ (first %) (second %))) squares)]]
     (concat hseqs vseqs cross1 cross2)))
 
-(defn check-end [board]
-  (let [victor (first (filter #(= 3 (abs %))
-                              (map #(apply + %)
-                                   (map (fn [x]
-                                          (map #(get-in board [:state %]) x))
-                                        win-sequences))))
+(defn win-sequence-values
+  [s board]
+  (map (:state board) s))
 
-        tie? (= 8 (count (filter #(and (some #{1} %) (some #{-1} %))
-                                 (map (fn [x]
-                                        (map #(get-in board [:state %]) x))
-                                      win-sequences))))]
+(defn score-win-sequence
+  [s board]
+  (apply + (win-sequence-values s board)))
+
+(defn win?
+  [score]
+  (= 3 (abs score)))
+
+(defn tie?
+  [s]
+  (and (some #{1} s)
+       (some #{-1} s)))
+
+(defn check-end [board]
+  (let [victor (->> win-sequences
+                    (map #(score-win-sequence % board))
+                    (filter win?)
+                    first)
+        tied-game? (= 8 (->> win-sequences
+                             (map #(win-sequence-values % board))
+                             (filter tie?)
+                             count))]
     (cond
       victor (do
                (prn (str "Player " (get-marker (/ victor 3)) " wins!"))
                (assoc board :turn 0))
-      tie? (do (prn "It's a tie!")
-               (assoc board :turn 0))
+      tied-game? (do (prn "It's a tie!")
+                     (assoc board :turn 0))
       true (do (prn (str "Player " (get-marker (:turn board)) "'s turn. Enter a letter followed by a number:"))
                board))))
 
@@ -78,7 +93,7 @@
       (check-end)))
 
 (defn score-win-seq [win-seq]
-  
+
   )
 
 (defn select-move [board]
@@ -94,4 +109,3 @@
       (= -1 (:turn board)) (let [line (read-line)]
                              (recur (turn board [(- (int (first line)) 97)
                                                  (Character/digit (last line) 10)]))))))
-
