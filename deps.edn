@@ -1,1 +1,5 @@
-{:deps {nrepl/nrepl {:mvn/version "0.9.0"}}}
+{:deps {nrepl/nrepl {:mvn/version "0.9.0"}}
+ :paths ["src" "test"]
+ :aliases
+ {:test {:extra-deps {lambdaisland/kaocha {:mvn/version "1.69.1069"}}
+         :main-opts ["-m" "kaocha.runner"]}}}
