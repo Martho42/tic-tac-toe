@@ -27,7 +27,7 @@
   (prn "   a b c")
   (prn "   -----")
   (doseq [y (range 3)]
-    (prn (apply str y ":" (map #(str " " (get-marker (board [% y]))) (range 3)))))
+    (prn (apply str y ":" (map #(str " " (get-marker (get-in board [:state [% y]]))) (range 3)))))
   (prn)
   (flush)
   board)
@@ -77,16 +77,21 @@
       (print-board)
       (check-end)))
 
+(defn score-win-seq [win-seq]
+  
+  )
+
+(defn select-move [board]
+  (key (rand-nth (filter #(zero? (val %)) (:state board)))))
+
 (defn -main []
   (print-board start-board)
   (check-end start-board)
   (loop [board start-board]
     (cond
       (= 1 (:turn board))
-      (turn board (key (rand-nth (filter #(zero? (val %)) (:state board)))))
+      (recur (turn board (select-move board)))
       (= -1 (:turn board)) (let [line (read-line)]
                              (recur (turn board [(- (int (first line)) 97)
                                                  (Character/digit (last line) 10)]))))))
 
-(comment
-  )
